@@ -7,78 +7,101 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner=new Scanner(System.in);
-        int[] wylosowaneLiczby = new int[6];
-        int iloscWylosowanychLiczb=0;
-        int wybranaLiczba=0;
-        boolean czyJuzIstnieje=false;
-        System.out.println("Podaj liczby z zakresu 1-49");
-        while (iloscWylosowanychLiczb<6){
+        int[] enteredNumbers = new int[6];
+        int amountEnteredNumbers=0;
+        int enteredNumber=0;
+        boolean isExists=false;
+        boolean isCorrectNumber =true;
+        System.out.println("Podaj 6 liczb z zakresu 1-49");
+        while (amountEnteredNumbers<6){
             while (!scanner.hasNextInt()){
                 System.out.println("Podaj poprawną liczbę");
                 scanner.next();
             }
-            czyJuzIstnieje=false;
-            wybranaLiczba=scanner.nextInt();
-            if(wybranaLiczba<1 || wybranaLiczba>49){
+            isExists=false;
+            isCorrectNumber=true;
+            enteredNumber=scanner.nextInt();
+            if(enteredNumber<1 || enteredNumber>49){
                 System.out.println("Podaj liczbę z zakresu 1-49");
+                isCorrectNumber=false;
+
             } else {
-                for (int i = 0; i < iloscWylosowanychLiczb; i++) {
-                    if(wybranaLiczba==wylosowaneLiczby[i]){
+                for (int i = 0; i < amountEnteredNumbers; i++) {
+                    if(enteredNumber==enteredNumbers[i]){
                         System.out.println("Podana liczba już istniej");
-                        czyJuzIstnieje =true;
+                        isExists =true;
                         break;
                     }
                 }
             }
-            if (!czyJuzIstnieje){
-                wylosowaneLiczby[iloscWylosowanychLiczb]=wybranaLiczba;
-                iloscWylosowanychLiczb++;
+            if (!isExists && isCorrectNumber){
+                enteredNumbers[amountEnteredNumbers]=enteredNumber;
+                amountEnteredNumbers++;
             }
         }
-        Arrays.sort(wylosowaneLiczby);
-        System.out.println(Arrays.toString(wylosowaneLiczby));
+        Arrays.sort(enteredNumbers);
+        System.out.println(Arrays.toString(enteredNumbers));
 
-        int[] lotto=lotto();
-        int iloscTrafien=0;
+        int[] tableLotto=randomTable();
+        System.out.println(Arrays.toString(tableLotto));
+
+        int countHit=0;
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
-                if(wylosowaneLiczby[i]==lotto[j]){
-                    iloscTrafien++;
+                if(enteredNumbers[i]==tableLotto[j]){
+                    countHit++;
                 }
             }
         }
-        if(iloscTrafien==0){
-            System.out.println("Trafiłeś "+ iloscTrafien+ " cyfr!");
-        } else if(iloscTrafien==1){
-            System.out.println("Trafiłeś "+ iloscTrafien+ " cyfrę!");
-        } else if(iloscTrafien==2||iloscTrafien==3||iloscTrafien==4){
-            System.out.println("Trafiłeś "+ iloscTrafien+ " cyfry");
-        } else
-        System.out.println("Trafiłeś "+ iloscTrafien+ " cyfr!");
+        switch (countHit) {
+            case 0:
+                System.out.println("Nie trafiłeś żadnej liczby! - brak wygranych :(");
+                break;
+            case 1:
+                System.out.println("Trafiłeś jedną liczbę! - brak wygranych :(");
+                break;
+            case 2:
+                System.out.println("Trafiłeś dwie liczby! - brak wygranych :(");
+                break;
+            case 3:
+                System.out.println("Trafiłeś trzy liczby! - wygrana :)");
+                break;
+            case 4:
+                System.out.println("Trafiłeś cztery liczby! - wygrana :)");
+                break;
+            case 5:
+                System.out.println("Trafiłeś pięć liczb! - wygrana :)");
+                break;
+            case 6:
+                System.out.println("Trafiłeś sześć liczb! - wygrana :)");
+                break;
+            default:
+                System.out.println("Błąd !!!");
+                break;
+        }
     }
 
-    static int[] lotto(){
+    static int[] randomTable(){
         Random random = new Random();
-        int[] lotto= new int[6];
-        lotto[0]=random.nextInt(49)+1;
-        boolean czyIstniej=false;
-        int iloscLicz=0;
-        while (iloscLicz<6){
-            czyIstniej=false;
+        int[] table= new int[6];
+        table[0]=random.nextInt(49)+1;
+        boolean isExists=false;
+        int countNumber=1;
+        while (countNumber<6){
+            isExists=false;
             int temp=random.nextInt(49)+1;
-            for (int i = 0; i < iloscLicz; i++) {
-                if (temp==lotto[i]){
-                    czyIstniej=true;
+            for (int i = 0; i < countNumber; i++) {
+                if (temp==table[i]){
+                    isExists=true;
                     break;
                 }
             }
-            if(!czyIstniej){
-                lotto[iloscLicz]=temp;
-                iloscLicz++;
+            if(!isExists){
+                table[countNumber]=temp;
+                countNumber++;
             }
         }
-        Arrays.sort(lotto);
-        System.out.println(Arrays.toString(lotto));
-        return lotto;
+        Arrays.sort(table);
+        return table;
     }
 }
