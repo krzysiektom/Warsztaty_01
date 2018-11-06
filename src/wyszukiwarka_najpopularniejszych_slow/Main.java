@@ -14,34 +14,54 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class Main {
+    final static String[][] WEB_PAGES={{"http://www.onet.pl/","span.title"}};
+    final static String[] EXCLUDED_WORDS={"oraz","ponieważ"};
+
     public static void main(String[] words) {
-        Connection connect = Jsoup.connect("http://www.onet.pl/");
+        wordsFromWebPages(WEB_PAGES);
+        analysisPopularWord();
+    }
+
+    public static void wordsFromWebPages(String[][] web_pages){
+        writeToFile(new StringBuilder(),"popular_words.txt", false);
+        for (int i = 0; i < web_pages.length; i++) {
+            wordsFromPage(web_pages[i][0],web_pages[i][1]);
+        }
+    }
+
+    public static void wordsFromPage(String url, String cssQuery){
+        Connection connect = Jsoup.connect(url);
         try {
             Document document = connect.get();
-            Elements links = document.select("span.title");
-            AnailzaZapisDoPliku(links);
+            Elements links = document.select(cssQuery);
+            removeSignExcludedWordAndWriteToFile(links);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        analizaPopularWord();
-
-
-
     }
 
-    static void AnailzaZapisDoPliku(Elements links){
+    static void removeSignExcludedWordAndWriteToFile(Elements links){
         StringBuilder text = new StringBuilder();
         for (Element elem : links) {
             String tempString = elem.text();
             String[] tempStringTab=removeSign(tempString).toLowerCase().split(" ");
             for (String word: tempStringTab) {
-                if (word.length()>3){
+                if (word.length()>3 && isNotExcludedWord(word)){
                     text.append(word).append(" ");
                 }                    
             }
             text.append("\n");
         }
-        writeToFile(text,"popular_words.txt", false);
+        writeToFile(text,"popular_words.txt", true);
+    }
+
+    static boolean isNotExcludedWord(String word){
+        for (String exludedeWord : EXCLUDED_WORDS) {
+            if(exludedeWord.equals(word)){
+                return false;
+            }
+        }
+        return true;
     }
 
     static String removeSign(String text){
@@ -62,9 +82,8 @@ public class Main {
         }
     }
 
-    static void analizaPopularWord(){
+    static void analysisPopularWord(){
         HashMap<String, Integer> popularity=new HashMap<>();
-
         File file=new File("popular_words.txt");
         try  {
             Scanner scanFile = new Scanner(file);
@@ -85,21 +104,7 @@ public class Main {
         Stream<Map.Entry<String, Integer>> sorted =
                 popularity.entrySet().stream()
                         .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
-        String objectsArray= Arrays.toString(sorted.toArray());
-
-
-/*
-        String[] slowa=popularity.keySet().toArray(new String[0]);
-        Integer[] ilosc=popularity.values().toArray(new Integer[0]);
-*/
-        StringBuilder textPass=new StringBuilder();
-        textPass.append(objectsArray);
-/*
-        for (int i = 0; i < slowa.length; i++) {
-            textPass.append(slowa[i]).append(" ").append(ilosc[i]).append("\n");
-        }
-*/
-        writeToFile(textPass,"filtered_popular_words.txt",false);
+        writeToFile(new StringBuilder(Arrays.toString(sorted.toArray())),"filtered_popular_words.txt",false);
     }
 
 
