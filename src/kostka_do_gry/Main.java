@@ -24,25 +24,17 @@ public class Main {
         if (indexOfD==-1)
             return Integer.MIN_VALUE;
         if (indexOfD>0 && indexOfSign!=-1){
-            int numberOfDice=Integer.valueOf(dice.substring(0,indexOfD));
-            int typeOfDice=Integer.valueOf(dice.substring(indexOfD+1,indexOfSign));
-            int additionalNumber=Integer.valueOf(dice.substring(indexOfSign));
-            return throwTheDice(numberOfDice, typeOfDice, additionalNumber);
+            return throwTheDice(Integer.valueOf(dice.substring(0,indexOfD)),
+                    Integer.valueOf(dice.substring(indexOfD+1,indexOfSign)),
+                            Integer.valueOf(dice.substring(indexOfSign)));
         } else if(indexOfD==0 && indexOfSign!=-1){
-            int numberOfDice=1;
-            int typeOfDice=Integer.valueOf(dice.substring(indexOfD+1,indexOfSign));
-            int additionalNumber=Integer.valueOf(dice.substring(indexOfSign));
-            return throwTheDice(numberOfDice, typeOfDice, additionalNumber);
+            return throwTheDice(1, Integer.valueOf(dice.substring(indexOfD+1,indexOfSign)),
+                    Integer.valueOf(dice.substring(indexOfSign)));
         } else if (indexOfD>0 && indexOfSign==-1){
-            int numberOfDice=Integer.valueOf(dice.substring(0,indexOfD));
-            int typeOfDice=Integer.valueOf(dice.substring(indexOfD+1));
-            int additionalNumber=0;
-            return throwTheDice(numberOfDice, typeOfDice, additionalNumber);
+            return throwTheDice(Integer.valueOf(dice.substring(0,indexOfD)),
+                    Integer.valueOf(dice.substring(indexOfD+1)), 0);
         } else if(indexOfD==0 && indexOfSign==-1){
-            int numberOfDice=1;
-            int typeOfDice=Integer.valueOf(dice.substring(indexOfD+1));
-            int additionalNumber=0;
-            return throwTheDice(numberOfDice, typeOfDice, additionalNumber);
+            return throwTheDice(1, Integer.valueOf(dice.substring(indexOfD+1)), 0);
         } else return Integer.MIN_VALUE;
     }
 
