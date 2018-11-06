@@ -6,20 +6,20 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Random random=new Random();
-        int wylosowanaLiczba=random.nextInt(100)+1;
-        int podanaLiczba=0;
+        int randomNumber=random.nextInt(100)+1;
+        int enteredNumber=0;
         System.out.println("Zgadnij liczbę w zakresie od 1 do 100");
-        boolean czyZgadles=false;
-        while (!czyZgadles){
+        boolean isGuess=false;
+        while (!isGuess){
             Scanner scanner = new Scanner(System.in);
             while (!scanner.hasNextInt()){
                 System.out.println("To nie jest liczba.");
                 scanner.next();
             }
-            podanaLiczba=scanner.nextInt();
-            if(podanaLiczba==wylosowanaLiczba){
-                czyZgadles=true;
-            }else if(podanaLiczba>wylosowanaLiczba){
+            enteredNumber=scanner.nextInt();
+            if(enteredNumber==randomNumber){
+                isGuess=true;
+            }else if(enteredNumber>randomNumber){
                 System.out.println("Za dużo!");
                 System.out.print("Zgadnij liczbę: ");
             } else {
@@ -28,7 +28,5 @@ public class Main {
             }
         }
         System.out.println("Zgadłeś");
-
-
     }
 }
