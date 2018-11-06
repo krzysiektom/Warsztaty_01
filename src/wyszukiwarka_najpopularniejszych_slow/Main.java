@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] words) {
         Connection connect = Jsoup.connect("http://www.onet.pl/");
         try {
             Document document = connect.get();
@@ -33,28 +33,28 @@ public class Main {
         StringBuilder text = new StringBuilder();
         for (Element elem : links) {
             String tempString = elem.text();
-            String[] tempStringTab=usuwanieZnakow(tempString).toLowerCase().split(" ");
-            for (String arg: tempStringTab) {
-                if (arg.length()>3){
-                    text.append(arg).append(" ");
+            String[] tempStringTab=removeSign(tempString).toLowerCase().split(" ");
+            for (String word: tempStringTab) {
+                if (word.length()>3){
+                    text.append(word).append(" ");
                 }                    
             }
             text.append("\n");
         }
-        writeToFile(text,"popular_words.txt");
+        writeToFile(text,"popular_words.txt", false);
     }
 
-    static String usuwanieZnakow(String text){
-        String[] znaki= {",",".","?",":","\"","!"};
-        for (int i = 0; i < znaki.length; i++) {
-            text=text.replace(znaki[i],"");
+    static String removeSign(String text){
+        String[] sign= {",",".","?",":","\"","!"};
+        for (int i = 0; i < sign.length; i++) {
+            text=text.replace(sign[i],"");
         }        
         return text;
     }
 
-    static void writeToFile(StringBuilder text, String fileName){
+    static void writeToFile(StringBuilder text, String fileName, boolean append){
         try {
-            FileWriter out = new FileWriter(fileName,false);
+            FileWriter out = new FileWriter(fileName,append);
             out.append(text.toString());
             out.close();
         }catch (IOException e) {
@@ -63,17 +63,17 @@ public class Main {
     }
 
     static void analizaPopularWord(){
-        HashMap<String, Integer> popularnosc=new HashMap<>();
+        HashMap<String, Integer> popularity=new HashMap<>();
 
         File file=new File("popular_words.txt");
         try  {
             Scanner scanFile = new Scanner(file);
             while (scanFile.hasNextLine()){
-                String line=scanFile.nextLine();
-                String[] lineTab =line.split(" ");
-                for (String arg:lineTab) {
-                    if (popularnosc.putIfAbsent(arg,1)!=null){
-                        popularnosc.put(arg,popularnosc.putIfAbsent(arg,1)+1);
+                String lineOfText=scanFile.nextLine();
+                String[] lineOfTextTab =lineOfText.split(" ");
+                for (String word:lineOfTextTab) {
+                    if (popularity.putIfAbsent(word,1)!=null){
+                        popularity.put(word,popularity.putIfAbsent(word,1)+1);
                     }
                 }
             }
@@ -83,14 +83,14 @@ public class Main {
         }
         //Sortowanie hashMap
         Stream<Map.Entry<String, Integer>> sorted =
-                popularnosc.entrySet().stream()
+                popularity.entrySet().stream()
                         .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
         String objectsArray= Arrays.toString(sorted.toArray());
 
 
 /*
-        String[] slowa=popularnosc.keySet().toArray(new String[0]);
-        Integer[] ilosc=popularnosc.values().toArray(new Integer[0]);
+        String[] slowa=popularity.keySet().toArray(new String[0]);
+        Integer[] ilosc=popularity.values().toArray(new Integer[0]);
 */
         StringBuilder textPass=new StringBuilder();
         textPass.append(objectsArray);
@@ -99,7 +99,7 @@ public class Main {
             textPass.append(slowa[i]).append(" ").append(ilosc[i]).append("\n");
         }
 */
-        writeToFile(textPass,"filtered_popular_words.txt");
+        writeToFile(textPass,"filtered_popular_words.txt",false);
     }
 
 
